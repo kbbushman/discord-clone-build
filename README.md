@@ -1,4 +1,4 @@
-# Twitter Clone
+# Discord Clone
 
 ### Technologies Used:
 
@@ -6,5 +6,6 @@
 - React Query
 - Socket.IO
 - Chakra UI
+- Zustand
 - Formik
 - Infinite Scroll
