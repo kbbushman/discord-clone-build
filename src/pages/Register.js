@@ -11,11 +11,22 @@ import { Form, Formik } from 'formik';
 import { Link as RLink, useHistory } from 'react-router-dom';
 import InputField from 'components/shared/InputField';
 import { register } from 'api/handler/auth';
-import userStore from 'stores/userStore';
+// import userStore from 'stores/userStore';
 import toErrorMap from 'utils/toErrorMap';
 import { RegisterSchema } from 'validation/auth.schema';
 
 export default function Register() {
+  const history = useHistory();
+
+  async function handleSubmit(values, { setErrors }) {
+    try {
+      const { data } = await register(values);
+      history.push('/channels/me');
+    } catch (err) {
+      setErrors(toErrorMap(err));
+    }
+  }
+
   return (
     <Flex minHeight="100vh" width="full" align="center" justifyContent="center">
       <Box px={4} width="full" maxWidth="500px" textAlign="center">
@@ -34,11 +45,9 @@ export default function Register() {
                 password: '',
               }}
               validationSchema={RegisterSchema}
-              onSubmit={(values) => {
-                console.log(values);
-              }}
+              onSubmit={handleSubmit}
             >
-              {() => (
+              {({ isSubmitting }) => (
                 <Form>
                   <InputField
                     label="Email"
@@ -62,7 +71,7 @@ export default function Register() {
                     width="full"
                     mt={4}
                     type="submit"
-                    isLoading={false}
+                    isLoading={isSubmitting}
                     _hover={{ bg: 'highlight.hover' }}
                     _active={{ bg: 'highlight.active' }}
                     _focus={{ boxShadow: 'none' }}
