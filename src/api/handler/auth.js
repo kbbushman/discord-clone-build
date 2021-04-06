@@ -1,6 +1,6 @@
-import { api } from "../apiClient";
+import { api } from '../apiClient';
 
-export const register = () => null;
+export const register = (body) => api.post('/account/register', body);
 
 export const login = () => null;
 
