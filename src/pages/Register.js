@@ -11,17 +11,21 @@ import { Form, Formik } from 'formik';
 import { Link as RLink, useHistory } from 'react-router-dom';
 import InputField from 'components/shared/InputField';
 import { register } from 'api/handler/auth';
-// import userStore from 'stores/userStore';
+import userStore from 'stores/userStore';
 import toErrorMap from 'utils/toErrorMap';
 import { RegisterSchema } from 'validation/auth.schema';
 
 export default function Register() {
   const history = useHistory();
+  const setUser = userStore((state) => state.setUser);
 
   async function handleSubmit(values, { setErrors }) {
     try {
       const { data } = await register(values);
-      history.push('/channels/me');
+      if (data) {
+        setUser(data);
+        history.push('/channels/me');
+      }
     } catch (err) {
       setErrors(toErrorMap(err));
     }
