@@ -6,7 +6,8 @@ export const login = (body) => api.post('/account/login', body);
 
 export const logout = () => null;
 
-export const forgotPassword = () => null;
+export const forgotPassword = (email) =>
+  api.post('/account/fogot-password', { email });
 
 export const changePassword = () => null;
 
