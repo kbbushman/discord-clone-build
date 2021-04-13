@@ -1,14 +1,34 @@
-import { Box, Button, Flex, Heading, Image, useToast } from "@chakra-ui/react";
-import { forgotPassword } from "api/handler/auth";
-import { Form, Formik } from "formik";
-import React from "react";
-import { useHistory } from "react-router-dom";
-import toErrorMap from "utils/toErrorMap";
-import InputField from "components/shared/InputField";
-import { ForgotPasswordSchema } from "validation/auth.schema";
+import { Box, Button, Flex, Heading, Image, useToast } from '@chakra-ui/react';
+import { forgotPassword } from 'api/handler/auth';
+import { Form, Formik } from 'formik';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import toErrorMap from 'utils/toErrorMap';
+import InputField from 'components/shared/InputField';
+import { ForgotPasswordSchema } from 'validation/auth.schema';
 
 export default function ForgotPassword() {
-  async function handleSubmit() {}
+  const history = useHistory();
+  const toast = useToast();
+
+  async function handleSubmit(values, { setErrors }) {
+    try {
+      const { data } = await forgotPassword(values);
+      if (data) {
+        toast({
+          title: 'Reset Password',
+          description:
+            'If an account with that email exists, we sent you an email',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        history.push('/');
+      }
+    } catch (err) {
+      setErrors(toErrorMap(err));
+    }
+  }
 
   return (
     <Flex minHeight="100vh" width="full" align="center" justifyContent="center">
@@ -21,7 +41,11 @@ export default function ForgotPassword() {
             <Heading fontSize="24px">Forgot Password</Heading>
           </Box>
           <Box my={4} textAlign="left">
-            <Formik>
+            <Formik
+              initialValues={{ email: '' }}
+              validationSchema={ForgotPasswordSchema}
+              onSubmit={handleSubmit}
+            >
               {({ isSubmitting }) => (
                 <Form>
                   <InputField
@@ -38,10 +62,10 @@ export default function ForgotPassword() {
                     mt={4}
                     type="submit"
                     isLoading={isSubmitting}
-                    _hover={{ bg: "highlight.hover" }}
-                    _active={{ bg: "highlight.active" }}
-                    _focus={{ boxShadow: "none" }}
-                    fontSize={"14px"}
+                    _hover={{ bg: 'highlight.hover' }}
+                    _active={{ bg: 'highlight.active' }}
+                    _focus={{ boxShadow: 'none' }}
+                    fontSize={'14px'}
                   >
                     Send Mail
                   </Button>
